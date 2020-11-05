@@ -1,22 +1,4 @@
 #!/usr/bin/python3
-'''
-Copyright 2020 Josep Argelich
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-'''
-
-# Libraries
 
 import sys
 import random
@@ -47,16 +29,7 @@ class Clause():
         for i in range(len(self.lits)): # Sets a negative sense with a 50% probability
             if random.random() < 0.5:
                 self.lits[i] *= -1 # Change the sense of the literal
-
-    def show(self):
-        """Prints a clause to the stdout"""
-
-        sys.stdout.write("%s 0\n" % " ".join(str(l) for l in self.lits))
     
-    def ok(self):
-        return "%s 0\n" % " ".join(str(l) for l in self.lits)
-
-
 
 class CNF():
     """A CNF formula randomly generated"""
@@ -82,65 +55,9 @@ class CNF():
             c = Clause(self.num_vars, self.clause_length)
             self.clauses.append(c)
 
-    def show(self):
-        """Prints the formula to the stdout"""
-
-        sys.stdout.write("c Random CNF formula\n")
-        sys.stdout.write("p cnf %d %d\n" % (self.num_vars, self.num_clauses))
-        for c in self.clauses:
-            c.show()
-
     def ok(self):
-        string = "c Random CNF formula\n"
-        string = string+"p cnf %d %d\n" % (self.num_vars, self.num_clauses)
-        for c in self.clauses:
-            string = string+c.ok()
-        return string
+        return [ clause.lits for clause in self.clauses]
 
 def ok():
     cnf = CNF(randint(1,100),randint(1,100),3)
     return cnf.ok()
-
-
-if __name__ == '__main__':
-    # A random CNF generator
-
-    # Check parameters
-    if len(sys.argv) < 4 or len(sys.argv) > 5:
-        sys.exit("Use: %s <num-vars> <num-clauses> <clause-length> [<random-seed>]" % sys.argv[0])
-
-    try:
-        num_vars = int(sys.argv[1])
-    except:
-        sys.exit("ERROR: Number of variables not an integer (%s)." % sys.argv[1])
-    if num_vars < 1:
-        sys.exit("ERROR: Number of variables must be >= 1 (%d)." % num_vars)
-
-    try:
-        num_clauses = int(sys.argv[2])
-    except:
-        sys.exit("ERROR: Number of clauses not an integer (%s)." % sys.argv[2])
-    if num_vars < 1:
-        sys.exit("ERROR: Number of clauses must be >= 1 (%d)." % num_clauses)
-
-    try:
-        clause_length = int(sys.argv[3])
-    except:
-        sys.exit("ERROR: Length of clauses not an integer (%s)." % sys.argv[3])
-    if num_vars < 1:
-        sys.exit("ERROR: Length of clauses must be >= 1 (%d)." % clause_length)
-
-    if len(sys.argv) > 4:
-        try:
-            seed = int(sys.argv[4])
-        except:
-            sys.exit("ERROR: Seed number not an integer (%s)." % sys.argv[4])
-    else:
-        seed = None
-
-    # Initialize random seed (current time)
-    random.seed(seed)
-    # Create a solver instance with the problem to solve
-    cnf_formula = CNF(num_vars, num_clauses, clause_length)
-    # Show formula
-    cnf_formula.show()

@@ -9,7 +9,6 @@ if __name__ == "__main__":
 
     @app.route('/')
     def get():
-        solution = randomCNF.ok()
-        return {'cnf':solution}
+        return {'cnf':randomCNF.ok()}
 
     app.run(host='0.0.0.0', port=8000)
