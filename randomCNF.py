@@ -57,7 +57,7 @@ class CNF():
             self.clauses.append(c)
 
     def ok(self):
-        cnf = Cnf.Cnf()
+        cnf = Cnf()
         for c in self.clauses:
             clause = cnf.clause.add()
             clause.literal.extend(c.lits)

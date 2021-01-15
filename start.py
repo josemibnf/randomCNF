@@ -1,7 +1,7 @@
 
-from flask import Flask
-from flask import jsonify
+from flask import Flask, jsonify, send_file
 import randomCNF
+import io
 
 if __name__ == "__main__":
 
@@ -9,6 +9,11 @@ if __name__ == "__main__":
 
     @app.route('/')
     def get():
-        return {'cnf':randomCNF.ok()}
+        return send_file(
+            io.BytesIO(randomCNF.ok().SerializeToString()),
+            as_attachment=True,
+            attachment_filename='abc.abc',
+            mimetype='attachment/x-protobuf'
+        )
 
     app.run(host='0.0.0.0', port=8000)
