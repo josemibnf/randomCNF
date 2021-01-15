@@ -3,6 +3,7 @@
 import sys
 import random
 from random import randint
+from api_pb2 import Cnf
 
 # Classes
 
@@ -56,7 +57,11 @@ class CNF():
             self.clauses.append(c)
 
     def ok(self):
-        return [ clause.lits for clause in self.clauses]
+        cnf = Cnf.Cnf()
+        for c in self.clauses:
+            clause = cnf.clause.add()
+            clause.literal.extend(c.lits)
+        return cnf
 
 def ok():
     cnf = CNF(randint(1,100),randint(1,100),3)
