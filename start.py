@@ -1,19 +1,27 @@
-
-from flask import Flask, jsonify, send_file
 import randomCNF
-import io
+from concurrent import futures
+import grpc, time
+from api_pb2 import Cnf
+import api_pb2_grpc
 
-if __name__ == "__main__":
+class RandomCnf(api_pb2_grpc.ServiceServicer):
+    def RandomCnf(self, request, context):
+        return randomCNF.ok()
 
-    app = Flask(__name__)
+# create a gRPC server
+server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+api_pb2_grpc.add_ServiceServicer_to_server(
+    RandomCnf(), server=server
+)
 
-    @app.route('/')
-    def get():
-        return send_file(
-            io.BytesIO(randomCNF.ok().SerializeToString()),
-            as_attachment=True,
-            attachment_filename='abc.abc',
-            mimetype='attachment/x-protobuf'
-        )
+print('Starting server. Listening on port 8000.')
+server.add_insecure_port('[::]:8000')
+server.start()
 
-    app.run(host='0.0.0.0', port=8000)
+# since server.start() will not block,
+# a sleep-loop is added to keep alive
+try:
+    while True:
+        time.sleep(86400)
+except KeyboardInterrupt:
+    server.stop(0)
