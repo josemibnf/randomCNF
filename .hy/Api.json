@@ -1,0 +1,7 @@
+ {
+    "Proto": "SELF_PROTO_FILE",
+    "Services" :
+        [
+            {"Port": "8080", "Service": "Solver", "Proto": "TCP"}
+        ]
+}
